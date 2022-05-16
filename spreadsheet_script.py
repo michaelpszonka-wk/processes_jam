@@ -2,8 +2,9 @@ import requests
 import json
 import os
 
-AUTH_URL = "https://api.wkdev.wdesk.com/iam/v1/oauth2/token"
-SS_API_URL = 'https://api.wkdev.wdesk.com/platform/v1/spreadsheets/'
+AUTH_URL = "https://api.wk-dev.wdesk.org/iam/v1/oauth2/token"
+SS_API_URL = 'https://api.wk-dev.wdesk.org/platform/v1/spreadsheets/'
+
 
 CLIENT_ID = os.getenv('CLIENT_ID')
 CLIENT_SECRET = os.getenv('CLIENT_SECRET')
@@ -39,7 +40,7 @@ class SSApi:
         print("Update Range: ", url)
         print("Values: ", values)
         dataRes = requests.put(url, headers = self._headers, data=json.dumps(values))
-        # print("Response: ", dataRes.status_code, ' Response Text: ', dataRes.text, ' Request: ', dataRes.request.body, ' Headers: ', dataRes.request.headers)
+        print("Response: ", dataRes.status_code, ' Response Text: ', dataRes.text, ' Request: ', dataRes.request.body, ' Headers: ', dataRes.request.headers)
 
 def write_tier_data(ssApi: SSApi):
     values = []
