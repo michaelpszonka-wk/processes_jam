@@ -29,14 +29,6 @@ class SSApi:
                          CELL_TO_WRITE + ':' + CELL_TO_WRITE
         self._headers = {'Authorization': self._accessToken}
 
-    def getRawData(self):
-        dataRes = requests.get(self._ssApiUrl, headers = self._headers)
-        # print(dataRes)
-        rawData = json.loads(dataRes.text)
-        #todo handle pagination
-        # print("---", rawData['data'][0]['values'][0])
-        return rawData['data'][0]['values']
-
     def updateCell(self, sheetId, range, values):
         url = SS_API_URL + SPREADSHEET_ID + "/sheets/" + sheetId + "/values/" + range
         print("Update Cell: ", url)
@@ -53,7 +45,6 @@ def write_tier_data(ssApi: SSApi):
 def main():
     authToken = ApiAuth().getAuthToken()
     ssApi = SSApi(authToken)
-    # rawData = ssApi.getRawData()
     write_tier_data(ssApi)
 
 print('Calling main')

@@ -8,29 +8,14 @@ import time
 # HOST = 'api.app.wdesk.com'
 HOST = 'api.wk-dev.wdesk.org'
 AUTH_API_HOST = 'https://api.wk-dev.wdesk.org/iam/v1/oauth2/token'
-# EXPORT_DOCUMENT_TEMPLATE = 'https://{}/platform/v1/documents/{}/export'
-# EXPORT_PROTO_DOCUMENT_TEMPLATE = 'https://{}/prototype/platform/documents/{}/export'
 EXPORT_SPREADSHEET_TEMPLATE = 'https://{}/platform/v1/spreadsheets/{}/export'
 EXPORT_PROTO_SPREADSHEET_TEMPLATE = 'https://{}/prototype/platform/spreadsheets/{}/export'
-XHTML = False
-
 
 def main():
-    # document_id = os.getenv('DOCUMENT_ID')
-    # if not document_id:
-    #     document_id = '1f86ea584fbf40feb11eab892095d686'
 
     spreadsheet_id = os.getenv('SPREADSHEET_ID')
-
-    if XHTML:
-        format_data = {'format': 'xhtml', 'xhtmlOptions': {'includeExternalHyperlinks': True}}
-        # url = EXPORT_PROTO_SPREADSHEET_TEMPLATE.format(HOST, document_id)
-        url = EXPORT_PROTO_SPREADSHEET_TEMPLATE.format(HOST, spreadsheet_id)
-    else:
-        # format_data = {'format': 'pdf'}
-        format_data = {'format': 'xlsx'}
-        # url = EXPORT_DOCUMENT_TEMPLATE.format(HOST, document_id)
-        url = EXPORT_SPREADSHEET_TEMPLATE.format(HOST, spreadsheet_id)
+    format_data = {'format': 'xlsx'}
+    url = EXPORT_SPREADSHEET_TEMPLATE.format(HOST, spreadsheet_id)
     headers = rebuild_json_headers()
     response = requests.post(url, json=format_data, headers=headers)
     print(url)
@@ -113,7 +98,6 @@ def write_file_to_confluence(files):
                'X-Atlassian-Token': 'nocheck'}
     URL = 'https://wiki.atl.workiva.net/rest/api/content/{}/child/attachment'.format(confluence_page_id)
 
-    # files = {'file': ('test.csv', open('test.csv', 'rb'), 'text/csv')}
     result = requests.post(URL, files=files, headers=headers)
     print('result status {} response {}'.format(result.status_code, result.text))
 
