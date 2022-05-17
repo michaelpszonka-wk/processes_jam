@@ -5,30 +5,41 @@ import re
 import requests
 import time
 
-#HOST = 'api.app.wdesk.com'
+# HOST = 'api.app.wdesk.com'
 HOST = 'api.wk-dev.wdesk.org'
 AUTH_API_HOST = 'https://api.wk-dev.wdesk.org/iam/v1/oauth2/token'
-EXPORT_DOCUMENT_TEMPLATE = 'https://{}/platform/v1/documents/{}/export'
-EXPORT_PROTO_DOCUMENT_TEMPLATE = 'https://{}/prototype/platform/documents/{}/export'
-XHTML = True
+# EXPORT_DOCUMENT_TEMPLATE = 'https://{}/platform/v1/documents/{}/export'
+# EXPORT_PROTO_DOCUMENT_TEMPLATE = 'https://{}/prototype/platform/documents/{}/export'
+EXPORT_SPREADSHEET_TEMPLATE = 'https://{}/platform/v1/spreadsheets/{}/export'
+EXPORT_PROTO_SPREADSHEET_TEMPLATE = 'https://{}/prototype/platform/spreadsheets/{}/export'
+XHTML = False
+
 
 def main():
-    document_id = os.getenv('DOCUMENT_ID')
-    if not document_id:
-        document_id = '24c9d74575a5412a99d040d66c0cfa7b'
+    # document_id = os.getenv('DOCUMENT_ID')
+    # if not document_id:
+    #     document_id = '1f86ea584fbf40feb11eab892095d686'
+
+    spreadsheet_id = os.getenv('SPREADSHEET_ID')
 
     if XHTML:
         format_data = {'format': 'xhtml', 'xhtmlOptions': {'includeExternalHyperlinks': True}}
-        url = EXPORT_PROTO_DOCUMENT_TEMPLATE.format(HOST, document_id)
+        # url = EXPORT_PROTO_SPREADSHEET_TEMPLATE.format(HOST, document_id)
+        url = EXPORT_PROTO_SPREADSHEET_TEMPLATE.format(HOST, spreadsheet_id)
     else:
-        format_data = {'format': 'pdf'}
-        url = EXPORT_DOCUMENT_TEMPLATE.format(HOST, document_id)
+        # format_data = {'format': 'pdf'}
+        format_data = {'format': 'xlsx'}
+        # url = EXPORT_DOCUMENT_TEMPLATE.format(HOST, document_id)
+        url = EXPORT_SPREADSHEET_TEMPLATE.format(HOST, spreadsheet_id)
     headers = rebuild_json_headers()
     response = requests.post(url, json=format_data, headers=headers)
+    print(url)
+    print(response.status_code)
 
     if response is not None and response.status_code == 401:
         print('401 - refreshing token to retry')
         headers = rebuild_json_headers()
+        print(url)
         response = requests.post(url, json=format_data, headers=headers)
     # This response should have a Location header
     job_location = response.headers.get('Location')
@@ -40,7 +51,7 @@ def main():
             print('file {} exported from Wdesk'.format(fname))
             mimetype = mimetypes.guess_type(fname)
             files = {'file': (fname, response.content, mimetype)}
-            #print('confluence input: {}'.format(files))
+            # print('confluence input: {}'.format(files))
             write_file_to_confluence(files)
             print('wrote {}'.format(fname))
         else:
@@ -48,9 +59,11 @@ def main():
     else:
         print('no job location, failed call')
 
+
 def rebuild_json_headers():
     token = get_access_token()
     return {'Authorization': 'Bearer ' + token, 'content-type': 'application/vnd.api+json'}
+
 
 def poll_for_completion(job_location, headers):
     sleep_between = 2
@@ -62,10 +75,10 @@ def poll_for_completion(job_location, headers):
             headers = rebuild_json_headers()
             response = requests.get(job_location, headers=headers)
         if response is not None and response.status_code < 300 and response.json().get('resourceUrl'):
-            #print('resource url response {}'.format(response.text))
+            # print('resource url response {}'.format(response.text))
             final_signed_url = response.json().get('resourceUrl')
             response = requests.get(final_signed_url, headers=headers)
-            #print('resource url response {}'.format(response.text))
+            # print('resource url response {}'.format(response.text))
             if response is not None and response.status_code == 401:  # try to refresh token and retry once.
                 print('401 - refreshing token to retry')
                 headers = rebuild_json_headers()
@@ -76,13 +89,14 @@ def poll_for_completion(job_location, headers):
             break
         time.sleep(sleep_between)
         retries += 1
-        if retries == 15: # at 30 seconds of waiting, bump to 5 seconds
+        if retries == 15:  # at 30 seconds of waiting, bump to 5 seconds
             sleep_between = 5
-        elif retries == 21: # at 1 minutes of waiting, bump to 10 seconds
+        elif retries == 21:  # at 1 minutes of waiting, bump to 10 seconds
             sleep_between = 10
         elif retries == 27:  # at 2 minutes of waiting, bump to 30 seconds
             sleep_between = 60
     return None
+
 
 def get_access_token():
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -92,19 +106,21 @@ def get_access_token():
     # print(auth_response.get('access_token'))
     return auth_response.get('access_token')
 
+
 def write_file_to_confluence(files):
     """accepts files = {'file': ('test.csv', open('test.csv', 'rb'), 'text/csv')}"""
     headers = {'Authorization': 'Bearer {}'.format(confluence_personal_access_token),
                'X-Atlassian-Token': 'nocheck'}
     URL = 'https://wiki.atl.workiva.net/rest/api/content/{}/child/attachment'.format(confluence_page_id)
 
-    #files = {'file': ('test.csv', open('test.csv', 'rb'), 'text/csv')}
+    # files = {'file': ('test.csv', open('test.csv', 'rb'), 'text/csv')}
     result = requests.post(URL, files=files, headers=headers)
     print('result status {} response {}'.format(result.status_code, result.text))
 
-CLIENT_ID = '<redacted>'
-CLIENT_SECRET = '<redacted>'
-confluence_page_id = '236359427'
-confluence_personal_access_token = '<redacted>'
+
+CLIENT_ID = os.getenv('CLIENT_ID')
+CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+confluence_page_id = os.getenv('CONFLUENCE_PAGE_ID')
+confluence_personal_access_token = os.getenv('CONFLUENCE_PERSONAL_ACCESS_TOKEN')
 
 main()
