@@ -1,22 +1,21 @@
-export CLIENT_ID=06a97c9d42a74dafacd55e43f2daebd1
-export CLIENT_SECRET=502e693515c8d833421f5a6b05506cdb953b0f04bc341d63
-export SPREADSHEET_ID=150dc2c6ee9d49669a5a9881ccd5e606
-export SHEET_ID=daecde2de2cd418dbb7ec79c8b7ad76d
-export CELL_CONTENT=Approved
-export CELL_TO_WRITE=B7
-export CONFLUENCE_PAGE_ID=242423884
-export CONFLUENCE_PERSONAL_ACCESS_TOKEN=MDA5NDEwNTEzMjU2OmemLGX/Yke7k48LPchSJL+KOzjb
-export DOCUMENT_ID=1f86ea584fbf40feb11eab892095d686
+export CLIENT_ID=yourclientid
+export CLIENT_SECRET=yoursecret
+export SPREADSHEET_ID=spreadsheetd_id
+export SHEET_ID=sheet_id
+export CELL_CONTENT=your-content
+export CELL_TO_WRITE=your-cell
+export CONFLUENCE_PAGE_ID=your-page-id
+export CONFLUENCE_PERSONAL_ACCESS_TOKEN=your-token
 
 
 # copy to spreadsheet parameters
-export SOURCE_SPREADSHEET_ID=4f6cea6138f94a0aa35290ad9a1157e7
-export SOURCE_SHEET_ID=daecde2de2cd418dbb7ec79c8b7ad76d
-export DESTINATION_SPREADSHEET_ID=150dc2c6ee9d49669a5a9881ccd5e606
-export DESTINATION_SHEET_NAME=Q9
+export SOURCE_SPREADSHEET_ID=source_spreadsheet_id
+export SOURCE_SHEET_ID=sheet_id
+export DESTINATION_SPREADSHEET_ID=destination_spraedsheet_id
+export DESTINATION_SHEET_NAME=your_cell_content
 
 
-export SLACK_API_TOKEN=xoxb-3828100254-3116154269782-Kz8BG330frSieiMiJUsYLn7R
-export MESSAGE_CONTENT='Hello Process Script Action Jam people!:wave: I am a test of wscripting & slack integrations'
+export SLACK_API_TOKEN=yourtoken
+export MESSAGE_CONTENT=your content
 #export CHANNEL=link-2022-process-script-action
-export CHANNEL=process-jam-channel
+export CHANNEL=your channel
