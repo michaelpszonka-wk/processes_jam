@@ -14,3 +14,9 @@ export SOURCE_SPREADSHEET_ID=4f6cea6138f94a0aa35290ad9a1157e7
 export SOURCE_SHEET_ID=daecde2de2cd418dbb7ec79c8b7ad76d
 export DESTINATION_SPREADSHEET_ID=150dc2c6ee9d49669a5a9881ccd5e606
 export DESTINATION_SHEET_NAME=Q9
+
+
+export SLACK_API_TOKEN=xoxb-3828100254-3116154269782-Kz8BG330frSieiMiJUsYLn7R
+export MESSAGE_CONTENT='Hello Process Script Action Jam people!:wave: I am a test of wscripting & slack integrations'
+#export CHANNEL=link-2022-process-script-action
+export CHANNEL=process-jam-channel
